@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>方塊倖存者</title>
+<style>
+  html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #0d0b16; color: #fff;
+    font-family: -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif; touch-action: none; -webkit-user-select: none; user-select: none; }
+  #unity-canvas { position: fixed; inset: 0; width: 100%; height: 100%; background: #0d0b16; outline: none; }
+  #loader { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; background: radial-gradient(circle at 50% 40%, #2a2050, #0d0b16 70%); }
+  #loader h1 { margin: 0; font-size: clamp(32px, 8vw, 64px); letter-spacing: 4px; background: linear-gradient(#fff3a0, #ff8a2a); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 4px 0 rgba(0,0,0,.25); }
+  #loader p { margin: 0; opacity: .75; font-size: 14px; letter-spacing: 3px; }
+  #bar { width: min(70vw, 420px); height: 14px; border-radius: 7px; background: rgba(255,255,255,.12); overflow: hidden; }
+  #fill { width: 0; height: 100%; background: linear-gradient(90deg, #ffd24a, #ff7a2a); border-radius: 7px; transition: width .2s; }
+  #pct { font-size: 14px; opacity: .8; }
+  #rotate { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 12px; background: #0d0b16; z-index: 10; font-size: 20px; text-align: center; padding: 16px; }
+  #rotate .phone { width: 46px; height: 80px; border: 4px solid #ffd24a; border-radius: 10px; animation: turn 1.6s ease-in-out infinite; }
+  @keyframes turn { 0%, 30% { transform: rotate(0); } 60%, 100% { transform: rotate(-90deg); } }
+  @media (orientation: portrait) and (max-width: 900px) { #rotate { display: flex; } }
+</style>
+</head>
+<body>
+<canvas id="unity-canvas" tabindex="-1"></canvas>
+<div id="loader">
+  <h1>方塊倖存者</h1>
+  <p>CUBELAND SURVIVORS</p>
+  <div id="bar"><div id="fill"></div></div>
+  <div id="pct">載入中… 0%</div>
+</div>
+<div id="rotate"><div class="phone"></div>請把手機橫過來玩</div>
+<script src="Build/Web.loader.js"></script>
+<script>
+  var fill = document.getElementById("fill"), pct = document.getElementById("pct");
+  createUnityInstance(document.getElementById("unity-canvas"), {
+    dataUrl: "Build/Web.data.unityweb",
+    frameworkUrl: "Build/Web.framework.js.unityweb",
+    codeUrl: "Build/Web.wasm.unityweb",
+    streamingAssetsUrl: "StreamingAssets",
+    companyName: "BluePudding",
+    productName: "方塊倖存者",
+    productVersion: "1.0.0",
+    devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2),
+  }, function (p) {
+    fill.style.width = Math.round(p * 100) + "%";
+    pct.textContent = "載入中… " + Math.round(p * 100) + "%";
+  }).then(function () {
+    document.getElementById("loader").remove();
+  }).catch(function (e) {
+    pct.textContent = "載入失敗：" + e;
+  });
+</script>
+</body>
+</html>
